@@ -51,6 +51,15 @@ func findUserByPhoneWithTopup(nomorHP string) (entity.User, bool) {
 	return user, true
 }
 
+func findUserByPhoneWithTransferKe(nomorHP string) (entity.User, bool) {
+	user := entity.User{}
+	err := db.Preload("TransferKe").Where("nomor_hp = ?", nomorHP).First(&user).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return entity.User{}, false
+	}
+	return user, true
+}
+
 func TopUp() {
 	listUser()
 	nomorHP := ""
@@ -189,5 +198,33 @@ func HistoryTopUp() {
 }
 
 func HistoryTransfer() {
-	fmt.Println("History Transfer")
+	// Display list user
+	listUser()
+
+	// Input nomor HP
+	nomorHP := ""
+	fmt.Print("Ketikkan nomor hp anda: ")
+	fmt.Scanln(&nomorHP)
+
+	// Skip jika input = q
+	if nomorHP != "q" {
+		// Cari user berdasarkan nomor HP nya
+		user, userExist := findUserByPhoneWithTransferKe(nomorHP)
+		if !userExist {
+			fmt.Println("User tidak ditemukan")
+			HistoryTransfer()  // Kembali ke inputan HP jika tidak ditemukan
+		}
+
+		fmt.Println("------------------------------------------------------")
+		fmt.Println("Data Transaksi Kirim Transfer - ", user.Nama, "| Saldo sekarang:", user.Saldo)
+		fmt.Println("------------------------------------------------------")
+		for _, topUp := range user.TransferKe {
+			user := entity.User{}
+			db.Find(&user, topUp.UserPenerimaId)
+			fmt.Println("Transfer", topUp.Nominal, "\t", "ke", user.Nama, "pada waktu: ", topUp.CreatedAt)
+		}
+		if len(user.TransferKe) <= 0 {
+			fmt.Println("Tidak ada riwayat transaksi")
+		}
+	}
 }
