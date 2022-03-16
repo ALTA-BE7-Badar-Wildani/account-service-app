@@ -82,7 +82,74 @@ func TopUp() {
 }
 
 func Transfer() {
-	fmt.Println("Transfer")
+	// Display list user
+	listUser()
+
+	// Input nomor HP pengirim
+	nomorHPPengirim := ""
+	fmt.Print("Ketikkan nomor hp anda: ")
+	fmt.Scanln(&nomorHPPengirim)
+
+	// Skip jika input = q
+	if nomorHPPengirim != "q" {
+		// Cari user pengirim berdasarkan nomor HP nya
+		userPengirim, userPengirimExist := findUserByPhone(nomorHPPengirim)
+		if !userPengirimExist {
+			fmt.Println("User tidak ditemukan")
+			Transfer()  // Kembali ke inputan HP jika tidak ditemukan
+		}
+
+		// Input nomor HP penerima
+		nomorHPPenerima := ""
+		fmt.Print("Ketikkan nomor hp yang akan di transfer (q untuk keluar): ")
+		fmt.Scanln(&nomorHPPenerima)
+
+		// Skip jika input = q
+		if nomorHPPenerima != "q" {
+
+			// Cari user dengan nomor HP yang sama
+			userPenerima, userPenerimaExist := findUserByPhone(nomorHPPenerima)
+			if !userPenerimaExist {
+				fmt.Println("User tidak ditemukan")
+				Transfer()  // Kembali ke inputan HP jika tidak ditemukan
+			}
+
+			// Masukan nominal transfer, 
+			// Jika saldo tidak cukup akan diminta input lagi
+			var nominalTransfer uint = 0
+			for {
+				fmt.Print("Masukkan jumlah Top-up: ")
+				fmt.Scanln(&nominalTransfer)
+				if userPengirim.Saldo >= nominalTransfer {
+					break
+				} 
+				fmt.Println("!! : Saldo anda tidak cukup!")
+			}
+
+			// Proses pengurangan dan penambahan saldo
+			userPengirim.Saldo = userPengirim.Saldo - nominalTransfer
+			userPenerima.Saldo = userPenerima.Saldo + nominalTransfer
+			db.Save(&userPengirim)
+			db.Save(&userPenerima)
+
+			// Insert data ke tabel transfer
+			transfer := entity.Transfer{
+				UserId: userPengirim.ID,
+				UserPenerimaId: userPenerima.ID,
+				Nominal: nominalTransfer,
+			}
+			db.Create(&transfer)
+
+			fmt.Println("----------------------")
+			fmt.Println("Transfer Berhasil!")
+			fmt.Println("----------------------")
+			fmt.Println("Nama Pengirim \t:", userPengirim.Nama)
+			fmt.Println("Nama Penerima \t:", userPenerima.Nama)
+			fmt.Println("Jumlah transfer \t:", transfer.Nominal)
+			fmt.Println("Saldo Anda Sekarang\t:", userPengirim.Saldo)
+			fmt.Println("Waktu: ", transfer.CreatedAt)
+		}
+	}
 }
 
 func HistoryTopUp() {
