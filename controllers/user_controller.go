@@ -16,6 +16,7 @@ func init() {
 
 func AddUser() {
 	addUser := entity.User{}
+
 	fmt.Println("Masukkan Nama:")
 	fmt.Scanln(&addUser.Nama)
 	fmt.Println("Masukkan Jenis Kelamin:")
@@ -42,7 +43,14 @@ func AddUser() {
 }
 
 func ListUser() {
-
+	var listUser []entity.User
+	tx := db.Find(&listUser)
+	if tx.Error != nil {
+		panic(tx.Error)
+	}
+	for _, value := range listUser {
+		fmt.Println("ID:", value.ID, "Nama:", value.Nama, "Jenis Kelamin:", value.JenisKelamin, "Alamat:", value.Alamat, "Nomor HP:", value.NomorHP, "Saldo:", value.Saldo, "Email:", value.Email, "Tanggal Lahir:", value.TanggalLahir)
+	}
 }
 
 func UpdateUser() {
