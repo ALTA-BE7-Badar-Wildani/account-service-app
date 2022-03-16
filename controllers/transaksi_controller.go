@@ -9,12 +9,18 @@ import (
 	"gorm.io/gorm"
 )
 
+// ------
+// Inisialisasi koneksi database
+// ------
 var db *gorm.DB
 func init() {
 	db = config.MysqlConnect()
 }
 
 
+// ------ 
+// Menampilkan daftar data user
+// ------ 
 func listUser() {
 	users := []entity.User{}
 	db.Find(&users)
@@ -33,6 +39,9 @@ func listUser() {
 	fmt.Println("----------------------------------------------------------------")
 }
 
+// ------ 
+// Mengambil data user berdasarkan nomor hp
+// ------ 
 func findUserByPhone(nomorHP string) (entity.User, bool) {
 	user := entity.User{}
 	err := db.Where("nomor_hp = ?", nomorHP).First(&user).Error
@@ -42,6 +51,9 @@ func findUserByPhone(nomorHP string) (entity.User, bool) {
 	return user, true
 }
 
+// ------ 
+// Mengambil data user berdasarkan nomor hp dengan membawa relasi tabel Topup
+// ------ 
 func findUserByPhoneWithTopup(nomorHP string) (entity.User, bool) {
 	user := entity.User{}
 	err := db.Preload("TopUp").Where("nomor_hp = ?", nomorHP).First(&user).Error
@@ -51,6 +63,9 @@ func findUserByPhoneWithTopup(nomorHP string) (entity.User, bool) {
 	return user, true
 }
 
+// ------ 
+// Mengambil data user berdasarkan nomor hp dengan membawa relasi tabel Transfer
+// ------ 
 func findUserByPhoneWithTransferKe(nomorHP string) (entity.User, bool) {
 	user := entity.User{}
 	err := db.Preload("TransferKe").Where("nomor_hp = ?", nomorHP).First(&user).Error
@@ -61,7 +76,10 @@ func findUserByPhoneWithTransferKe(nomorHP string) (entity.User, bool) {
 }
 
 func TopUp() {
+	// List user
 	listUser()
+
+	// Input nomor HP
 	nomorHP := ""
 	fmt.Print("Ketikkan nomor hp untuk top-up (q untuk keluar): ")
 	fmt.Scanln(&nomorHP)
@@ -74,7 +92,7 @@ func TopUp() {
 			TopUp()
 		}
 		
-
+		// Input nominal top-up
 		var nominalTopUp uint = 0
 		fmt.Print("Masukkan jumlah Top-up: ")
 		fmt.Scanln(&nominalTopUp)
@@ -89,6 +107,8 @@ func TopUp() {
 			Nominal: nominalTopUp,
 		}
 		db.Create(&topUp)
+
+		// Menampilkan hasil
 		fmt.Println("----------------------")
 		fmt.Println("Top-up Berhasil!")
 		fmt.Println("----------------------")
@@ -158,6 +178,7 @@ func Transfer() {
 			}
 			db.Create(&transfer)
 
+			// Menampilkan hasil
 			fmt.Println("----------------------")
 			fmt.Println("Transfer Berhasil!")
 			fmt.Println("----------------------")
@@ -188,6 +209,7 @@ func HistoryTopUp() {
 			HistoryTopUp()  // Kembali ke inputan HP jika tidak ditemukan
 		}
 
+		// Menampilkan hasil
 		fmt.Println("------------------------------------------------------")
 		fmt.Println("Data Transaksi Topup - ", user.Nama, "| Saldo sekarang:", user.Saldo)
 		fmt.Println("------------------------------------------------------")
@@ -215,6 +237,7 @@ func HistoryTransfer() {
 			HistoryTransfer()  // Kembali ke inputan HP jika tidak ditemukan
 		}
 
+		// Menampilkan hasil
 		fmt.Println("------------------------------------------------------")
 		fmt.Println("Data Transaksi Kirim Transfer - ", user.Nama, "| Saldo sekarang:", user.Saldo)
 		fmt.Println("------------------------------------------------------")
@@ -223,6 +246,8 @@ func HistoryTransfer() {
 			db.Find(&user, topUp.UserPenerimaId)
 			fmt.Println("Transfer", topUp.Nominal, "\t", "ke", user.Nama, "pada waktu: ", topUp.CreatedAt)
 		}
+
+		// Menampilkan hasil kosong
 		if len(user.TransferKe) <= 0 {
 			fmt.Println("Tidak ada riwayat transaksi")
 		}
