@@ -216,6 +216,11 @@ func HistoryTopUp() {
 		for _, topUp := range user.TopUp {
 			fmt.Println(topUp.Nominal, "\t", topUp.CreatedAt)
 		}
+
+		// Menampilkan hasil kosong
+		if len(user.TransferKe) <= 0 {
+			fmt.Println("Tidak ada riwayat transaksi")
+		}
 	}
 }
 
