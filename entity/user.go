@@ -16,6 +16,8 @@ type User struct {
 	Email string
 	TanggalLahir time.Time
 	TopUp []TopUp `gorm:"foreignKey:UserId;references:ID"`
+	TransferKe []Transfer `gorm:"foreignKey:UserId;references:ID"`
+	TransferDari []Transfer `gorm:"foreignKey:UserPenerimaId;references:ID"`
 }
 
 func (u User) TableName() string {
