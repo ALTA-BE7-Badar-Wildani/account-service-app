@@ -42,6 +42,15 @@ func findUserByPhone(nomorHP string) (entity.User, bool) {
 	return user, true
 }
 
+func findUserByPhoneWithTopup(nomorHP string) (entity.User, bool) {
+	user := entity.User{}
+	err := db.Preload("TopUp").Where("nomor_hp = ?", nomorHP).First(&user).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return entity.User{}, false
+	}
+	return user, true
+}
+
 func TopUp() {
 	listUser()
 	nomorHP := ""
@@ -153,7 +162,30 @@ func Transfer() {
 }
 
 func HistoryTopUp() {
-	fmt.Println("HistoryTopUp")
+	// Display list user
+	listUser()
+
+	// Input nomor HP pengirim
+	nomorHP := ""
+	fmt.Print("Ketikkan nomor hp anda: ")
+	fmt.Scanln(&nomorHP)
+
+	// Skip jika input = q
+	if nomorHP != "q" {
+		// Cari user pengirim berdasarkan nomor HP nya
+		user, userExist := findUserByPhoneWithTopup(nomorHP)
+		if !userExist {
+			fmt.Println("User tidak ditemukan")
+			HistoryTopUp()  // Kembali ke inputan HP jika tidak ditemukan
+		}
+
+		fmt.Println("------------------------------------------------------")
+		fmt.Println("Data Transaksi Topup - ", user.Nama, "| Saldo sekarang:", user.Saldo)
+		fmt.Println("------------------------------------------------------")
+		for _, topUp := range user.TopUp {
+			fmt.Println(topUp.Nominal, "\t", topUp.CreatedAt)
+		}
+	}
 }
 
 func HistoryTransfer() {
