@@ -10,3 +10,7 @@ type Transfer struct {
 	User User `gorm:"foreignKey:UserId"`
 	UserPenerima User `gorm:"foreignKey:UserId"`
 }
+
+func (t Transfer) TableName() string {
+	return "transfer"
+}

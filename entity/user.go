@@ -17,3 +17,7 @@ type User struct {
 	TanggalLahir time.Time
 	TopUp []TopUp `gorm:"foreignKey:UserId;references:ID"`
 }
+
+func (u User) TableName() string {
+	return "user"
+}

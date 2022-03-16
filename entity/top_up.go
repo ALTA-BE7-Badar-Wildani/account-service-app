@@ -9,3 +9,7 @@ type TopUp struct {
 	User User `gorm:"foreignKey:UserId"`
 }
 
+func (topUp TopUp) TableName() string {
+	return "top_up"
+}
+
