@@ -54,13 +54,27 @@ func ListUser() {
 
 func UpdateUser() {
 	// Input ID User untuk melakukan Update
-	IDUser := entity.User{}
+	var IDUser int = 0
 	fmt.Println("Ketikkan nomor ID User untuk melakukan Update")
 	fmt.Scanln(&IDUser)
 
+	// Mengambil data user dari database
+	user := entity.User{}
+	db.Find(&user, IDUser)
+	fmt.Println(user)
+
+	var nama string
+
 	fmt.Println("Menu Update")
 	fmt.Println("----------------------------")
-	fmt.Println("1) Update Nama")
+	fmt.Print("1) Update Nama (", user.Nama, ") : ")
+	fmt.Scanln(&nama)
+	if nama != "" {
+		user.Nama = nama
+	}
+
+	fmt.Println(user)
+
 	fmt.Println("2) Update Jenis Kelamin")
 	fmt.Println("3) Update Nomor HP")
 	fmt.Println("4) Update Saldo")
@@ -82,9 +96,13 @@ func UpdateUser() {
 }
 
 func DeleteUser() {
-	delete := entity.User{}
+	var id uint
 	fmt.Println("Masukkan ID User yang akan anda hapus:")
-	fmt.Scanln(&delete.ID)
+	fmt.Scanln(id)
 
-	db.Delete(&delete.ID)
+	// Megnambil dataa dari db
+	user := entity.User{}
+	db.Find(&user, id)
+
+	db.Delete(&user)
 }
