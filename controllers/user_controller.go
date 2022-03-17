@@ -54,7 +54,7 @@ func ListUser() {
 
 func UpdateUser() {
 	// Input ID User untuk melakukan Update
-	var IDUser int = 0
+	var IDUser uint
 	fmt.Println("Ketikkan nomor ID User untuk melakukan Update")
 	fmt.Scanln(&IDUser)
 
@@ -63,46 +63,62 @@ func UpdateUser() {
 	db.Find(&user, IDUser)
 	fmt.Println(user)
 
-	var nama string
+	var nama, jeniskelamin, nomorhp, email, alamat string
+	var saldo uint
 
-	fmt.Println("Menu Update")
 	fmt.Println("----------------------------")
 	fmt.Print("1) Update Nama (", user.Nama, ") : ")
 	fmt.Scanln(&nama)
 	if nama != "" {
 		user.Nama = nama
 	}
-
-	fmt.Println(user)
-
-	fmt.Println("2) Update Jenis Kelamin")
-	fmt.Println("3) Update Nomor HP")
-	fmt.Println("4) Update Saldo")
-	fmt.Println("5) Update Email")
-	fmt.Println("6) Update Alamat")
-	fmt.Println("7) Update Tanggal Lahir")
-
-	menuUpdate := ""
-	fmt.Println("Masukkan pilihan update anda:")
-	fmt.Scanln(&menuUpdate)
-
-	switch menuUpdate {
-	case "1":
-		var NamaBaru string
-		fmt.Println("Masukkan nama baru anda:")
-		fmt.Scanln(&NamaBaru)
-		db.Model(&IDUser).Update("Nama", &NamaBaru)
+	fmt.Print("2) Update Jenis Kelamin (", user.JenisKelamin, ") : ")
+	fmt.Scanln(&jeniskelamin)
+	if jeniskelamin != "" {
+		user.JenisKelamin = jeniskelamin
 	}
+	fmt.Print("3) Update Nomor HP (", user.NomorHP, ") : ")
+	fmt.Scanln(&nomorhp)
+	if nomorhp != "" {
+		user.NomorHP = nomorhp
+	}
+	fmt.Print("4) Update Saldo (", user.Saldo, ") : ")
+	fmt.Scanln(&saldo)
+	if saldo != user.Saldo {
+		user.Saldo = saldo
+	}
+	fmt.Print("5) Update Email (", user.Email, ") : ")
+	fmt.Scanln(&email)
+	if email != "" {
+		user.Email = email
+	}
+	fmt.Print("6) Update Alamat (", user.Alamat, ") : ")
+	fmt.Scanln(&alamat)
+	if alamat != "" {
+		user.Alamat = alamat
+	}
+	// Update data tanggal lahir
+	var tahun, bulan, tanggal int
+	fmt.Println("Tanggal Lahir (", user.TanggalLahir, ") : ")
+	fmt.Print("Update Tanggal Lahir: ")
+	fmt.Scanln(&tanggal)
+	fmt.Print("Update Bulan Lahir: ")
+	fmt.Scanln(&bulan)
+	fmt.Print("Update Tahun Lahir: ")
+	fmt.Scanln(&tahun)
+	if tanggal != 0 || bulan != 0 || tahun != 0 {
+		user.TanggalLahir = time.Date(tahun, time.Month(bulan), tanggal, 0, 0, 0, 0, time.Local)
+	}
+
+	db.Save(user) //menyimpan seluruh update yang dilakukan
 }
 
 func DeleteUser() {
 	var id uint
-	fmt.Println("Masukkan ID User yang akan anda hapus:")
-	fmt.Scanln(id)
+	fmt.Print("Masukkan ID User yang akan anda hapus:")
+	fmt.Scanln(&id)
 
-	// Megnambil dataa dari db
+	//Delete User sesuai dengan ID User
 	user := entity.User{}
-	db.Find(&user, id)
-
-	db.Delete(&user)
+	db.Delete(&user, id)
 }
