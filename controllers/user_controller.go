@@ -1,18 +1,9 @@
 package controllers
 
 import (
-	"account-service-app/config"
 	"account-service-app/entity"
 	"fmt"
-
-	"gorm.io/gorm"
 )
-
-var db *gorm.DB
-
-func init() {
-	db = config.MysqlConnect()
-}
 
 func AddUser() {
 	addUser := entity.User{}
@@ -36,9 +27,8 @@ func AddUser() {
 	if tx.Error != nil {
 		panic(tx.Error)
 	}
-	if tx.RowsAffected == 0 {
-		fmt.Println("add User failed")
-	}
+
+	fmt.Println("----------------------------")
 	fmt.Println("Add User Successfully")
 }
 
@@ -49,14 +39,43 @@ func ListUser() {
 		panic(tx.Error)
 	}
 	for _, value := range listUser {
-		fmt.Println("ID:", value.ID, "Nama:", value.Nama, "Jenis Kelamin:", value.JenisKelamin, "Alamat:", value.Alamat, "Nomor HP:", value.NomorHP, "Saldo:", value.Saldo, "Email:", value.Email, "Tanggal Lahir:", value.TanggalLahir)
+		fmt.Println("ID:", value.ID, "Nama:", value.Nama, "Jenis Kelamin:", value.JenisKelamin, "Nomor HP:", value.NomorHP, "Saldo:", value.Saldo, "Email:", value.Email, "Alamat:", value.Alamat, "Tanggal Lahir:", value.TanggalLahir)
 	}
 }
 
 func UpdateUser() {
-	fmt.Println("Update User")
+	// Input ID User untuk melakukan Update
+	IDUser := entity.User{}
+	fmt.Println("Ketikkan nomor ID User untuk melakukan Update")
+	fmt.Scanln(&IDUser)
+
+	fmt.Println("Menu Update")
+	fmt.Println("----------------------------")
+	fmt.Println("1) Update Nama")
+	fmt.Println("2) Update Jenis Kelamin")
+	fmt.Println("3) Update Nomor HP")
+	fmt.Println("4) Update Saldo")
+	fmt.Println("5) Update Email")
+	fmt.Println("6) Update Alamat")
+	fmt.Println("7) Update Tanggal Lahir")
+
+	menuUpdate := ""
+	fmt.Println("Masukkan pilihan update anda:")
+	fmt.Scanln(&menuUpdate)
+
+	switch menuUpdate {
+	case "1":
+		var NamaBaru string
+		fmt.Println("Masukkan nama baru anda:")
+		fmt.Scanln(&NamaBaru)
+		db.Model(&IDUser).Update("Nama", &NamaBaru)
+	}
 }
 
 func DeleteUser() {
-	fmt.Println("Delete User")
+	delete := entity.User{}
+	fmt.Println("Masukkan ID User yang akan anda hapus:")
+	fmt.Scanln(&delete.ID)
+
+	db.Delete(&delete.ID)
 }
