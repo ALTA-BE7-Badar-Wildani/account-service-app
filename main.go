@@ -1,9 +1,16 @@
 package main
 
 import (
+	"account-service-app/config"
 	"account-service-app/controllers"
+	"account-service-app/entity"
 	"fmt"
 )
+
+func init() {
+	db := config.MysqlConnect()
+	db.AutoMigrate(&entity.User{}, &entity.Transfer{}, &entity.TopUp{})
+}
 
 func main() {
 	menu := ""
