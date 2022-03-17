@@ -3,6 +3,7 @@ package controllers
 import (
 	"account-service-app/entity"
 	"fmt"
+	"time"
 )
 
 func AddUser() {
@@ -20,8 +21,16 @@ func AddUser() {
 	fmt.Scanln(&addUser.Saldo)
 	fmt.Println("Masukkan Email:")
 	fmt.Scanln(&addUser.Email)
-	fmt.Println("Masukkan Tanggal Lahir")
-	fmt.Scanln(&addUser.TanggalLahir)
+
+	// Input data tanggal lahir
+	var tahun, bulan, tanggal int
+	fmt.Println("Masukkan Tanggal Lahir (tanggal): ")
+	fmt.Scanln(&tanggal)
+	fmt.Println("Masukkan Tanggal Lahir (bulan): ")
+	fmt.Scanln(&bulan)
+	fmt.Println("Masukkan Tanggal Lahir (tahun): ")
+	fmt.Scanln(&tahun)
+	addUser.TanggalLahir = time.Date(tahun, time.Month(bulan), tanggal, 0, 0, 0, 0, time.Local)
 
 	tx := db.Save(&addUser)
 	if tx.Error != nil {
