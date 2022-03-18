@@ -246,10 +246,14 @@ func HistoryTransfer() {
 		fmt.Println("------------------------------------------------------")
 		fmt.Println("Data Transaksi Kirim Transfer - ", user.Nama, "| Saldo sekarang:", user.Saldo)
 		fmt.Println("------------------------------------------------------")
-		for _, topUp := range user.TransferKe {
-			user := entity.User{}
-			db.Find(&user, topUp.UserPenerimaId)
-			fmt.Println("Transfer", topUp.Nominal, "\t", "ke", user.Nama, "pada waktu: ", topUp.CreatedAt)
+
+		fmt.Println(len(user.TransferKe))
+
+		for i := len(user.TransferKe) - 1; i >= 0; i-- {
+			// fmt.Println(user.TransferKe[i].Nominal)
+			penerima := entity.User{}
+			db.Find(&penerima, user.TransferKe[i].UserPenerimaId)
+			fmt.Println("Transfer", user.TransferKe[i].Nominal, "\t", "ke", penerima.Nama, "pada waktu: ", user.TransferKe[i].CreatedAt)
 		}
 
 		// Menampilkan hasil kosong
