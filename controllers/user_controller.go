@@ -9,26 +9,26 @@ import (
 func AddUser() {
 	addUser := entity.User{}
 
-	fmt.Println("Masukkan Nama:")
+	fmt.Print("Masukkan Nama: ")
 	fmt.Scanln(&addUser.Nama)
-	fmt.Println("Masukkan Jenis Kelamin:")
+	fmt.Print("Masukkan Jenis Kelamin: ")
 	fmt.Scanln(&addUser.JenisKelamin)
-	fmt.Println("Masukkan Alamat:")
+	fmt.Print("Masukkan Alamat: ")
 	fmt.Scanln(&addUser.Alamat)
-	fmt.Println("Masukkan Nomor HP:")
+	fmt.Print("Masukkan Nomor HP: ")
 	fmt.Scanln(&addUser.NomorHP)
-	fmt.Println("Masukkan Saldo:")
+	fmt.Print("Masukkan Saldo: ")
 	fmt.Scanln(&addUser.Saldo)
-	fmt.Println("Masukkan Email:")
+	fmt.Print("Masukkan Email: ")
 	fmt.Scanln(&addUser.Email)
 
 	// Input data tanggal lahir
 	var tahun, bulan, tanggal int
-	fmt.Println("Masukkan Tanggal Lahir (tanggal): ")
+	fmt.Print("Masukkan Tanggal Lahir (tanggal): ")
 	fmt.Scanln(&tanggal)
-	fmt.Println("Masukkan Tanggal Lahir (bulan): ")
+	fmt.Print("Masukkan Tanggal Lahir (bulan): ")
 	fmt.Scanln(&bulan)
-	fmt.Println("Masukkan Tanggal Lahir (tahun): ")
+	fmt.Print("Masukkan Tanggal Lahir (tahun): ")
 	fmt.Scanln(&tahun)
 	addUser.TanggalLahir = time.Date(tahun, time.Month(bulan), tanggal, 0, 0, 0, 0, time.Local)
 
