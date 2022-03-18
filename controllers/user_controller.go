@@ -99,12 +99,12 @@ func UpdateUser() {
 	}
 	// Update data tanggal lahir
 	var tahun, bulan, tanggal int
-	fmt.Println("Tanggal Lahir (", user.TanggalLahir, ") : ")
-	fmt.Print("Update Tanggal Lahir: ")
+	fmt.Println("7) Tanggal Lahir (", user.TanggalLahir, ") : ")
+	fmt.Print("--  Update Tanggal Lahir: ")
 	fmt.Scanln(&tanggal)
-	fmt.Print("Update Bulan Lahir: ")
+	fmt.Print("--  Update Bulan Lahir: ")
 	fmt.Scanln(&bulan)
-	fmt.Print("Update Tahun Lahir: ")
+	fmt.Print("--  Update Tahun Lahir: ")
 	fmt.Scanln(&tahun)
 	if tanggal != 0 || bulan != 0 || tahun != 0 {
 		user.TanggalLahir = time.Date(tahun, time.Month(bulan), tanggal, 0, 0, 0, 0, time.Local)
